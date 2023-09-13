@@ -19,11 +19,7 @@
         var NumberOfLines = 0
         var ChairsInOneLine = 0
 
-        /*
         var Students = []
-        Students.push(new Student("1","12/B","Gere Csanád", "SZF1", "4:1"))
-        Students.push(new Student("2","12/B","Jani Patrik", "SZF1", "4:2"))
-        */
 
         //Letoltes function, Az uj Blob elso parameterebe megy a kontent amit a fajlba szeretnenk tenni.
         let downloadClassroom = () => {
@@ -59,7 +55,12 @@
 
             reader.onload = function(event){
                 let content = event.target.result;
-                console.log(JSON.parse(content))
+
+                JSON.parse(content).forEach(element => {
+                    Students.push(new Student(element.id,element.studenClass,element.name,element.group,element.deskPosition))
+                });
+
+                console.log(Students)
             }
 
             reader.readAsText(file);
