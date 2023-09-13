@@ -37,6 +37,7 @@
             URL.revokeObjectURL(link.href);
         }
 
+
         let uploadStudentsList = (fileName) => {
             document.getElementById('file-chosen-SL').textContent = "-" + fileName + "-"
         }
@@ -47,15 +48,42 @@
             document.getElementById('file-chosen-FC').textContent = "-" + fileName + "-"
         }
 
+        
         let submitStudentsList = () => {
+            const file = document.getElementById('uploadStudentsList-btn').files[0];
 
+            const reader = new FileReader()
+
+            reader.onload = function(event){
+                const content = event.target.result;
+                console.log(JSON.parse(content))
+            }
+
+            reader.readAsText(file);
         }
-
         let submitEmptyClassroom = () => {
-            
+            const file = document.getElementById('uploadEmptyClassroom-btn').files[0];
+
+            const reader = new FileReader()
+
+            reader.onload = function(event){
+                const content = event.target.result;
+                console.log(JSON.parse(content))
+            }
+
+            reader.readAsText(file);
         }
         let submitFilledClassroom = () => {
-            
+            const file = document.getElementById('uploadFilledClassroom-btn').files[0];
+
+            const reader = new FileReader()
+
+            reader.onload = function(event){
+                const content = event.target.result;
+                console.log(JSON.parse(content))
+            }
+
+            reader.readAsText(file);
         }
     </script>
 </head>
