@@ -16,6 +16,9 @@
             }
         }
 
+        var NumberOfLines = 0
+        var ChairsInOneLine = 0
+
         /*
         var Students = []
         Students.push(new Student("1","12/B","Gere Csanád", "SZF1", "4:1"))
@@ -50,37 +53,43 @@
 
         
         let submitStudentsList = () => {
-            const file = document.getElementById('uploadStudentsList-btn').files[0];
+            let file = document.getElementById('uploadStudentsList-btn').files[0];
 
             const reader = new FileReader()
 
             reader.onload = function(event){
-                const content = event.target.result;
+                let content = event.target.result;
                 console.log(JSON.parse(content))
             }
 
             reader.readAsText(file);
         }
         let submitEmptyClassroom = () => {
-            const file = document.getElementById('uploadEmptyClassroom-btn').files[0];
+            let file = document.getElementById('uploadEmptyClassroom-btn').files[0];
 
             const reader = new FileReader()
 
             reader.onload = function(event){
-                const content = event.target.result;
-                console.log(JSON.parse(content))
+                let content = event.target.result;
+
+                NumberOfLines = content.split('\n').length - 1
+
+                console.log(NumberOfLines)
             }
 
             reader.readAsText(file);
         }
         let submitFilledClassroom = () => {
-            const file = document.getElementById('uploadFilledClassroom-btn').files[0];
+            let file = document.getElementById('uploadFilledClassroom-btn').files[0];
 
             const reader = new FileReader()
 
             reader.onload = function(event){
-                const content = event.target.result;
-                console.log(JSON.parse(content))
+                let content = event.target.result;
+
+                NumberOfLines = content.split('\n').length - 1
+
+                console.log(NumberOfLines)
             }
 
             reader.readAsText(file);
