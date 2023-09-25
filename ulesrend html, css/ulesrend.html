@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="ulesrend.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ulesrend</title>
+    
+    <script>
+        
+        class Student {
+            constructor(id, studenClass, name, group, deskPosition){
+                this.id = id
+                this.studenClass = studenClass
+                this.name = name
+                this.group = group
+                this.deskPosition = deskPosition
+            }
+        }
+
+        var NumberOfLines = 0
+        var ChairsInOneLine = 0
+
+        var Students = []
+
+        //Letoltes function, Az uj Blob elso parameterebe megy a kontent amit a fajlba szeretnenk tenni.
+        let downloadClassroom = () => {
+            const link = document.createElement("a");
+
+            const file = new Blob([JSON.stringify(Students)], { type: 'text/plain' });
+
+            link.href = URL.createObjectURL(file);
+    
+            link.download = "FilledClassroom.json"
+
+            link.click();
+
+            URL.revokeObjectURL(link.href);
+        }
+
+
+        let uploadStudentsList = (fileName) => {
+            document.getElementById('file-chosen-SL').textContent = "-" + fileName + "-"
+        }
+        let uploadEmptyClassroom = (fileName) => {
+            document.getElementById('file-chosen-EC').textContent = "-" + fileName + "-"
+        }
+        let uploadFilledClassroom = (fileName) => {
+            document.getElementById('file-chosen-FC').textContent = "-" + fileName + "-"
+        }
+
+        
+        let submitStudentsList = () => {
+            let file = document.getElementById('uploadStudentsList-btn').files[0];
+
+            const reader = new FileReader()
+
+            reader.onload = function(event){
+                let content = event.target.result;
+
+                JSON.parse(content).forEach(element => {
+                    Students.push(new Student(element.id,element.studenClass,element.name,element.group,element.deskPosition))
+                });
+
+                console.log(Students)
+            }
+
+            reader.readAsText(file);
+        }
+        let submitEmptyClassroom = () => {
+            let file = document.getElementById('uploadEmptyClassroom-btn').files[0];
+
+            const reader = new FileReader()
+
+            reader.onload = function(event){
+                let content = event.target.result;
+
+                NumberOfLines = content.split('\n').length - 1
+
+                console.log(NumberOfLines)
+            }
+
+            reader.readAsText(file);
+        }
+        let submitFilledClassroom = () => {
+            let file = document.getElementById('uploadFilledClassroom-btn').files[0];
+
+            const reader = new FileReader()
+
+            reader.onload = function(event){
+                let content = event.target.result;
+
+                NumberOfLines = content.split('\n').length - 1
+
+                console.log(NumberOfLines)
+            }
+
+            reader.readAsText(file);
+        }
+    </script>
+</head>
+<body>
+    <br>
+    <div id="uploadStudentsList">
+        <input type="file" id="uploadStudentsList-btn" onchange="uploadStudentsList(files[0].name)" hidden/>
+        <label for="uploadStudentsList-btn">Upload Students List</label><br>
+        <span id="file-chosen-SL">-No File Chosen-</span><br>
+        <button onclick="submitStudentsList()">Submit</button>
+    </div>
+    <br>
+    <div id="uploadEmptyClassroom">
+        <input type="file" id="uploadEmptyClassroom-btn" onchange="uploadEmptyClassroom(files[0].name)" hidden/>
+        <label for="uploadEmptyClassroom-btn">Upload Empty Classroom</label><br>
+        <span id="file-chosen-EC">-No file chosen-</span><br>
+        <button onclick="submitEmptyClassroom()">Submit</button>
+    </div>
+    <br>
+    <div id="uploadFilledClassroom">
+        <input type="file" id="uploadFilledClassroom-btn" onchange="uploadFilledClassroom(files[0].name)" hidden/>
+        <label for="uploadFilledClassroom-btn">Upload Filled Classroom</label><br>
+        <span id="file-chosen-FC">-No file chosen-</span><br>
+        <button onclick="submitFilledClassroom()">Submit</button>
+    </div>
+    <br>
+    <div id="downloadClassroom">
+        <button onclick="downloadClassroom()">Download Classroom File</button><br>
+    </div>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+</body>
+</html>
