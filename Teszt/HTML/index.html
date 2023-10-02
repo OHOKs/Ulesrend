@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="./../dist/Hello.js"></script>
     <title>Ulesrend</title>
     <script>
-        
+
         class Student {
-            constructor(id, studenClass, name, group, deskPosition){
+            constructor(id, studenClass, name, group, deskPosition) {
                 this.id = id
                 this.studenClass = studenClass
                 this.name = name
@@ -28,7 +30,7 @@
             const file = new Blob([JSON.stringify(Students)], { type: 'text/plain' });
 
             link.href = URL.createObjectURL(file);
-    
+
             link.download = "FilledClassroom.json"
 
             link.click();
@@ -47,17 +49,17 @@
             document.getElementById('file-chosen-FC').textContent = "-" + fileName + "-"
         }
 
-        
+
         let submitStudentsList = () => {
             let file = document.getElementById('uploadStudentsList-btn').files[0];
 
             const reader = new FileReader()
 
-            reader.onload = function(event){
+            reader.onload = function (event) {
                 let content = event.target.result;
 
                 JSON.parse(content).forEach(element => {
-                    Students.push(new Student(element.id,element.studenClass,element.name,element.group,element.deskPosition))
+                    Students.push(new Student(element.id, element.studenClass, element.name, element.group, element.deskPosition))
                 });
 
                 console.log(Students)
@@ -70,7 +72,7 @@
 
             const reader = new FileReader()
 
-            reader.onload = function(event){
+            reader.onload = function (event) {
                 let content = event.target.result;
 
                 NumberOfLines = content.split('\n').length - 1
@@ -85,7 +87,7 @@
 
             const reader = new FileReader()
 
-            reader.onload = function(event){
+            reader.onload = function (event) {
                 let content = event.target.result;
 
                 NumberOfLines = content.split('\n').length - 1
@@ -97,24 +99,25 @@
         }
     </script>
 </head>
+
 <body>
     <br>
     <div id="uploadStudentsList">
-        <input type="file" id="uploadStudentsList-btn" onchange="uploadStudentsList(files[0].name)" hidden/>
+        <input type="file" id="uploadStudentsList-btn" onchange="uploadStudentsList(files[0].name)" hidden />
         <label for="uploadStudentsList-btn">Upload Students List</label><br>
         <span id="file-chosen-SL">-No File Chosen-</span><br>
         <button onclick="submitStudentsList()">Submit</button>
     </div>
     <br>
     <div id="uploadEmptyClassroom">
-        <input type="file" id="uploadEmptyClassroom-btn" onchange="uploadEmptyClassroom(files[0].name)" hidden/>
+        <input type="file" id="uploadEmptyClassroom-btn" onchange="uploadEmptyClassroom(files[0].name)" hidden />
         <label for="uploadEmptyClassroom-btn">Upload Empty Classroom</label><br>
         <span id="file-chosen-EC">-No file chosen-</span><br>
         <button onclick="submitEmptyClassroom()">Submit</button>
     </div>
     <br>
     <div id="uploadFilledClassroom">
-        <input type="file" id="uploadFilledClassroom-btn" onchange="uploadFilledClassroom(files[0].name)" hidden/>
+        <input type="file" id="uploadFilledClassroom-btn" onchange="uploadFilledClassroom(files[0].name)" hidden />
         <label for="uploadFilledClassroom-btn">Upload Filled Classroom</label><br>
         <span id="file-chosen-FC">-No file chosen-</span><br>
         <button onclick="submitFilledClassroom()">Submit</button>
@@ -123,5 +126,7 @@
     <div id="downloadClassroom">
         <button onclick="downloadClassroom()">Download Classroom File</button><br>
     </div>
+    <button onclick="HelloWorld()">ASDJNADFJ</button>
 </body>
+
 </html>

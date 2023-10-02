@@ -1,0 +1,30 @@
+{
+  "name": "ulesrend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"tsc -p tsconfig.json -w\"  \"live-server\"",
+    "build": "tsc -p tsconfig.json -w",
+    "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OHOKs/Ulesrend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OHOKs/Ulesrend/issues"
+  },
+  "homepage": "https://github.com/OHOKs/Ulesrend#readme",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.1",
+    "live-server": "^1.2.2",
+    "ts-node": "^10.9.1"
+  }
+}
