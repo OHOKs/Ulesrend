@@ -1,8 +1,14 @@
 import { Student } from "./index.js";
 class StudentInSor extends Student {
-    constructor() {
+    constructor(student) {
         super();
         this._deskPosition = new Array(2);
+        this.addStudentData(student);
+    }
+    addStudentData(student) {
+        this.class = student.class;
+        this.name = student.name;
+        this.group = student.group;
     }
     get deskPosition() {
         return this._deskPosition;
