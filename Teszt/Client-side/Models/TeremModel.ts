@@ -15,6 +15,7 @@
         - this is where search function will be
 */
 
+import * as fs from 'fs'
 import { StudentData, SorInterface, OszlopInterface, StudentInSor, Student, Oszlop, StudentInterface } from './index.js';
 
 interface TeremInterface {
@@ -28,6 +29,7 @@ interface TeremInterface {
     moveToNextSor(): void;
 
     addStudentByPosition(student: StudentData, x: number, y: number): void;
+    addStudentsByCsvFile(csvFilePaths: string): void;
 
     getStudentByPosition(x: number, y: number): StudentData;
     getStudentsBySor(oszlopKulcs: number): Array<StudentData>;
@@ -58,6 +60,7 @@ class Terem implements TeremInterface {
 
         return student;
     }
+
     /**
      * El skippeli a szekeket
      * @param numberOfChairs Hany szeket szeretnenk kihagyni
@@ -65,6 +68,7 @@ class Terem implements TeremInterface {
     skipChairs(numberOfChairs: number): void {
         this._currentSor.skipChairs(numberOfChairs);
     }
+
     /**
      * Append-elni a megadott tanulot a jelenleg aktiv sorhoz, a 0-dikkal kezdi a szamolast
      * @param student A tanulo @interface StudentData formaban 
@@ -72,6 +76,7 @@ class Terem implements TeremInterface {
     addStudentToSor(student: StudentData): void {
         this._currentSor.addStudentToSor(student)
     }
+
     /**
      * Tovabb lepteti jelenleg aktiv sort
      */
@@ -79,6 +84,7 @@ class Terem implements TeremInterface {
         this._oszlop.addSorToOszlop(this._currentSor.students);
         this._currentSor = this._oszlop.createNextSor();
     }
+
     /**
      * Elrakja x,y koordinatara a tanulot. 0,0 a bal elsot jelenti
      * @param student A tanulo @interface StudentData formaban
@@ -92,6 +98,29 @@ class Terem implements TeremInterface {
         this._oszlop.sorok[y][x] = currentStudent;
     }
 
+
+    addStudentsByCsvFile(csvFilePath: string): void {
+        const allContent = fs.readFileSync(csvFilePath, "utf-8")
+        let i: number = 0;
+        let numberOfOszlop: number = 0;
+
+        // i wanna go kms
+        // TODO finish this
+        allContent.split('/n?/r').forEach((line) => {
+            line.split(';').forEach((value) => {
+                if (i == 0 && value) {
+                    numberOfOszlop++;
+                }
+
+                this.addStudentToSor()
+
+            })
+            this.moveToNextSor()
+            i++;
+        })
+        i++;
+    }
+
     /**
      * Visszaadja a tanulot sor es oszlop alapjan. 0,0 legfelul a bal elsot jelenti
      * @param x Hanyadik a helyen ul a padban / sorban
@@ -101,6 +130,7 @@ class Terem implements TeremInterface {
     getStudentByPosition(x: number, y: number): StudentData {
         return this._oszlop.sorok[y][x];
     }
+
     /**
      * Visszadaja a tanulokat az alapjan hanyadik sorban ulnek
      * @param oszlopKulcs Hanyadik sorban ulnek. 0 a legfelsot jelenti
@@ -109,6 +139,7 @@ class Terem implements TeremInterface {
     getStudentsBySor(oszlopKulcs: number): StudentData[] {
         return this._oszlop.sorok[oszlopKulcs]
     }
+
     /**
      * Visszadaja a tanulokat az alapjan hanyadik oszlopban ulnek
      * @param sorKulcs Hanyadik oszlopban ulnek. 0 a bal oldalit jelenti

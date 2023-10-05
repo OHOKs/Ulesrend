@@ -36,7 +36,14 @@ class Sor implements SorInterface {
 
     // TODO this WILL cause bugs, cus accessing objects skipped by this mehtod should return undefined or most likely an empty object in the array
     skipChairs(numberOfChairs: number): void {
-        this._sorKulcs += numberOfChairs;
+        for (let i = 0; i <= numberOfChairs; i++) {
+            const studentInSor = new StudentInSor(false);
+            studentInSor.oszlopDeskPosition = this.oszlopKulcs;
+            studentInSor.sorDeskPosition = this.sorKulcs;
+
+            this._students.push(studentInSor);
+            this._sorKulcs++;
+        }
     }
 
     get students(): Array<StudentInterface> {
