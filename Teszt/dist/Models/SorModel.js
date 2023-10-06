@@ -19,8 +19,20 @@ class Sor {
         this._sorKulcs++;
     }
     // TODO this WILL cause bugs, cus accessing objects skipped by this mehtod should return undefined or most likely an empty object in the array
-    skipChairs(numberOfChairs) {
-        this._sorKulcs += numberOfChairs;
+    skipChairs(numberOfChairs, isDisabled) {
+        for (let i = 0; i <= numberOfChairs; i++) {
+            let studentInSor;
+            if (isDisabled) {
+                studentInSor = new StudentInSor(false);
+            }
+            else {
+                studentInSor = new StudentInSor(true);
+            }
+            studentInSor.oszlopDeskPosition = this.oszlopKulcs;
+            studentInSor.sorDeskPosition = this.sorKulcs;
+            this._students.push(studentInSor);
+            this._sorKulcs++;
+        }
     }
     get students() {
         return this._students;

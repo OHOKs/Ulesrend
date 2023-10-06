@@ -13,6 +13,7 @@
     Terem accesses the array containing the Sor objects
         - this is where search function will be
 */
+import * as fs from 'fs';
 import { StudentInSor, Student, Oszlop } from './index.js';
 class Terem {
     constructor(capacityByRow) {
@@ -32,9 +33,10 @@ class Terem {
     /**
      * El skippeli a szekeket
      * @param numberOfChairs Hany szeket szeretnenk kihagyni
+     * @param isDisabled Lehet-e a helyre ulni, vagy csak ures True = nem lehet oda ulni
      */
-    skipChairs(numberOfChairs) {
-        this._currentSor.skipChairs(numberOfChairs);
+    skipChairs(numberOfChairs, isDisabled) {
+        this._currentSor.skipChairs(numberOfChairs, isDisabled);
     }
     /**
      * Append-elni a megadott tanulot a jelenleg aktiv sorhoz, a 0-dikkal kezdi a szamolast
@@ -61,6 +63,37 @@ class Terem {
         currentStudent.sorDeskPosition = x;
         currentStudent.oszlopDeskPosition = y;
         this._oszlop.sorok[y][x] = currentStudent;
+    }
+    addStudentsByCsvFile(csvFilePath) {
+        const allContent = fs.readFileSync(csvFilePath, "utf-8");
+        let i = 0;
+        let numberOfOszlop = 0;
+        // i wanna go kms
+        // TODO fix this SHIT, IT SUCKS but works so i dont give a fuck
+        allContent.split('/n?/r').forEach((line) => {
+            line.split(';').forEach((value) => {
+                if (i == 0 && value) {
+                    numberOfOszlop++;
+                }
+                if (value == '-1') {
+                    this.skipChairs(1, true);
+                    return;
+                }
+                if (value == '0') {
+                    this.skipChairs(1, false);
+                    return;
+                }
+                const valueAsJson = JSON.parse(value);
+                const studnet = new Student();
+                studnet.class = valueAsJson.class;
+                studnet.name = valueAsJson.name;
+                studnet.group = valueAsJson.group;
+                this.addStudentToSor(studnet);
+            });
+            this.moveToNextSor();
+            i++;
+        });
+        numberOfOszlop++;
     }
     /**
      * Visszaadja a tanulot sor es oszlop alapjan. 0,0 legfelul a bal elsot jelenti
@@ -99,6 +132,12 @@ class Terem {
     }
     getAllStudents() {
         return this._oszlop.sorok;
+    }
+    get largestOszlop() {
+        return this._oszlop.maxOszlopKulcs;
+    }
+    get largestSor() {
+        return Math.max.apply(this._oszlop.allSorKulcs);
     }
     get currentSor() {
         return this._currentSor;
