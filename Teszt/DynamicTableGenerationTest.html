@@ -3,38 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Két táblázat elrendezése</title>
+    <title>Ulesrend</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        table {
-            border-collapse: collapse;
+        .classroomTable{
+            width: 40%; 
+            float: right; 
+            margin-left: 20px; 
         }
-        td {
-            width: 50px;
-            height: 50px;
-            border: 1px solid #ccc;
+        .studentsTable{
+            width: 20%;
+            float: left; 
+            margin-right: 20px; 
         }
         .draggable {
-            width: 100%;
+            width: 90%;
             height: 100%;
             background-color: #3498db;
             cursor: pointer;
         }
+        .aviablePlace{
+            background-color: grey; 
+            width: 50px; height: 50px;
+        }
+        .teacherPlace{
+            background-color: darkslategray;
+            color:aliceblue;
+            width: 50px; height: 50px;
+        }
+        .nullPlace{
+            background-color: black;
+            color:aliceblue;
+            width: 50px; height: 50px;
+        }
     </style>
 </head>
 <body>
-    <button onclick="createTable()">asd</button>
+    <button onclick="createClassroomTable()">CreateClassroom</button>
+    <button onclick="createStudentsTable()">createStudents</button>
+    <button onclick="save()">Save</button>
+    <td class="null"></td>
 </body>
 <script>
-    let classroom =[
-    ["Keskeny kevin","Dancsik dávid",null,"Nobody","Gábor"],
-    ["Korom Levente","Bogyó",null,"Nobody","Gergő"],
-    ["Bene Dominik","Nobody",null,"Nobody","Nobody"],
-    ["Gere Csanád","Jani Patrik",null,"Gyula","Nobody"],
-    ["Tanár",null,null,"Barna Máté","Barta Máte"]]
+    //tanterem alap {JELENLEG IDEIGLENES} -- TODO
+    let classroom = [ 
+        ["Keskeny kevin","Dancsik dávid",null,"Nobody","Gábor"],
+        ["Korom Levente","Bogyó",null,"Nobody","Gergő"],
+        ["Bene Dominik","Nobody",null,"Nobody","Nobody"],
+        ["Gere Csanad","Jani Patrik",null,"Gyula","Nobody"],
+        ["Tanár",null,null,"Barna Máté","Barta Máte"]
+    ]
 
-    let classroomColloum = 6
-    let classroomRows = 6
+    //diaklista {JELENLEG IDEIGLENES} -- TODO
+    let studentList = [ 
+        "Jani Patrik",
+        "Gere Csanad",
+        "Gyula",
+        "Mate1",
+        "Mate2"
+    ]
+
+    let classroomColloums = 6 //oszlopok szama {JELENLEG IDEIGLENES} --  TODO
+    let classroomRows = 6 //sorok szama {JELENLEG IDEIGLENES} -- TODO
 
     function allowDrop(event) {
         event.preventDefault();
@@ -49,44 +79,45 @@
 
         var data = event.dataTransfer.getData("text/plain");
 
-        console.log("Dragged Element ID:", data);
-
         var draggedDiv = document.getElementById(data);
 
-        var target = event.target;
         var containsText = false;
 
-        for (var i = 0; i < target.childNodes.length; i++) {
-            if (target.childNodes[i].nodeName === '#text') {
+        for (var i = 0; i < event.target.childNodes.length; i++) {
+            if (event.target.childNodes[i].nodeName === '#text') {
                 containsText = true;
                 break;
             }
         }
 
-        if(containsText == false){
+        if(containsText == false && event.target.id != "Students" && document.getElementById(event.target.id).childNodes.length == 0){
+            event.target.appendChild(draggedDiv);
+        }
+        if (containsText == false && event.target.id == "Students"){
             event.target.appendChild(draggedDiv);
         }
     }
 
-    function createTable() {
-        if(document.getElementById("classroom")){
-            document.getElementById("classroom").remove()
-        }
-        else{
+    function createClassroomTable() {
+        if(document.getElementById("classroom")){ document.getElementById("classroom").remove() }
 
-        }
         var table = document.createElement("table");
         table.setAttribute('id', 'classroom')
+        table.setAttribute('class', 'classroomTable')
 
         var tbody = document.createElement("tbody");
 
         for (var i = 0; i < classroomRows-1; i++) {
+
             var row = document.createElement("tr");
 
-            for (var j = 0; j < classroomColloum-1; j++) {
+            for (var j = 0; j < classroomColloums-1; j++) {
+
                 var cell = document.createElement("td");
                 cell.setAttribute('id', (i + 1) +"-"+ (j + 1))
+
                 if(classroom[i][j] != null){
+
                     if(classroom[i][j] != "Nobody" && classroom[i][j] != "Tanár"){
                         var div = document.createElement("div")
                         div.setAttribute('id', (i + 1) +"x"+ (j + 1))
@@ -94,18 +125,17 @@
                         div.setAttribute('class', 'draggable')
                         div.appendChild(document.createTextNode(classroom[i][j]))
                         cell.appendChild(div);
-                    }
-                    if(classroom[i][j] != "Tanár"){
+                    } if(classroom[i][j] != "Tanár"){
                         cell.addEventListener('dragover', allowDrop);
                         cell.addEventListener('drop', drop);
-                        cell.setAttribute('style', 'background-color: black; width: 50px; height: 50px;')
+                        cell.setAttribute('class', 'aviablePlace')
+                    } else { 
+                        cell.setAttribute('class', 'teacherPlace')
+                        cell.appendChild(document.createTextNode(classroom[i][j]))
                     }
-                    if(classroom[i][j]== "Tanár"){
-                        var div = document.createElement("div")
-                        div.setAttribute('id', (i + 1) +"x"+ (j + 1))
-                        div.appendChild(document.createTextNode(classroom[i][j]))
-                        cell.appendChild(div);
-                    }
+                } else {
+                    cell.setAttribute('class', "nullPlace")
+                    cell.appendChild(document.createTextNode("Folyoso"))
                 }
                 row.appendChild(cell);
             }
@@ -122,6 +152,117 @@
         draggableDivs.forEach(function(div) {
             div.addEventListener('dragstart', drag);
         });
+    }
+
+    function createStudentsTable(){
+        if(document.getElementById("studentList")){ document.getElementById("studentList").remove() }
+        if(!document.getElementById("classroom")){ alert("Eloszor kotelezo a tanterem beimportalasa") }
+        else{
+            var table = document.createElement("table");
+            table.setAttribute('id', 'studentList')
+            table.setAttribute('class', 'studentsTable')
+
+            var tbody = document.createElement("tbody");
+
+            var row = document.createElement("tr");
+
+            var cell = document.createElement("td");
+            cell.setAttribute('id', "Students")
+            cell.addEventListener('dragover', allowDrop);
+            cell.addEventListener('drop', drop);
+            cell.setAttribute('style', 'background-color: black; width: 50px; height: 50px;')
+
+            for (var i = 0; i < studentList.length; i++) {
+                if(!checkDuplactedStudents(classroom, studentList[i])){
+                    var div = document.createElement("div")
+                    div.setAttribute('id', i)
+                    div.setAttribute('draggable', 'true')
+                    div.setAttribute('class', 'draggable')
+                    div.appendChild(document.createTextNode(studentList[i]))
+                    cell.appendChild(div);
+                }
+            }
+
+            row.appendChild(cell);
+            tbody.appendChild(row);
+            table.appendChild(tbody);
+
+            document.body.appendChild(table);
+
+            var draggableDivs = document.querySelectorAll('.draggable');
+
+            draggableDivs.forEach(function(div) {
+                div.addEventListener('dragstart', drag);
+            });
+        }
+    }
+
+    function save(){
+        let classroomSave = createDynamicArray(classroomRows, classroomColloums)
+        /*let classroomSave = [[null,null,null,null,null],
+                            [null,null,null,null,null],
+                            [null,null,null,null,null],
+                            [null,null,null,null,null],
+                            [null,null,null,null,null]]*/
+        for (var i = 0; i < classroomRows-1; i++) {
+            for (var j = 0; j < classroomColloums-1; j++) {
+
+                let id = (i+1)+"-"+(j+1);
+                let element = document.getElementById(id);
+
+                if(element.childNodes.length != 0){
+                    classroomSave[i][j] = element.textContent
+                } 
+                if(element.childNodes.length == 0 && element.className != "null"){
+                    classroomSave[i][j] = "Nobody"
+                    console.log(element.value)
+                }
+            }
+        }
+
+        let downloadableFile = ""
+        
+        for(var i = 0; i < classroomSave.length; i++){
+            if(i != 0){downloadableFile+="\n"}
+            for(var j = 0; j < classroomSave[i].length; j++){
+                downloadableFile+= classroom[i][j]+";"
+            }
+        }
+        const link = document.createElement("a");
+
+        const file = new Blob([downloadableFile], { type: 'text/plain' });
+
+        link.href = URL.createObjectURL(file);
+
+        link.download = "Classroom.json"
+
+        link.click();
+
+        URL.revokeObjectURL(link.href);
+    }
+
+    function createDynamicArray(Rows, Colloums){
+        let classroomSave = new Array(classroomRows-1)
+        for (var i = 0; i < classroomRows-1; i++) {
+            classroomSave[i] = new Array(classroomColloums-1)
+            for (var j = 0; j < classroomColloums-1; j++) {
+                classroomSave[i][j] = null
+            }
+        }
+        
+        return classroomSave;
+    }
+
+    function checkDuplactedStudents(classroom, student){
+        let exist = false
+
+        for (var i = 0; i < classroomRows-1; i++) {
+            for (var j = 0; j < classroomColloums-1; j++) {
+                if(classroom[i][j] == student){exist = true}
+            }
+        }
+
+        return exist
     }
 </script>
 </html>
