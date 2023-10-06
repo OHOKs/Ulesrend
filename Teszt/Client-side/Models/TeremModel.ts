@@ -22,10 +22,13 @@ interface TeremInterface {
     currentSor: SorInterface;
     oszlop: OszlopInterface;
 
+    largestOszlop: number;
+    largestSor: number;
+
     createStudent(osztaly: string, name: string, group: string): StudentData;
 
     addStudentToSor(student: StudentData): void;
-    skipChairs(numberOfChairs: number): void;
+    skipChairs(numberOfChairs: number, isDisabled?: boolean): void;
     moveToNextSor(): void;
 
     addStudentByPosition(student: StudentData, x: number, y: number): void;
@@ -64,9 +67,10 @@ class Terem implements TeremInterface {
     /**
      * El skippeli a szekeket
      * @param numberOfChairs Hany szeket szeretnenk kihagyni
+     * @param isDisabled Lehet-e a helyre ulni, vagy csak ures True = nem lehet oda ulni
      */
-    skipChairs(numberOfChairs: number): void {
-        this._currentSor.skipChairs(numberOfChairs);
+    skipChairs(numberOfChairs: number, isDisabled?: boolean): void {
+        this._currentSor.skipChairs(numberOfChairs, isDisabled);
     }
 
     /**
@@ -105,20 +109,37 @@ class Terem implements TeremInterface {
         let numberOfOszlop: number = 0;
 
         // i wanna go kms
-        // TODO finish this
+        // TODO fix this SHIT, IT SUCKS but works so i dont give a fuck
         allContent.split('/n?/r').forEach((line) => {
             line.split(';').forEach((value) => {
                 if (i == 0 && value) {
                     numberOfOszlop++;
                 }
 
-                this.addStudentToSor()
+                if (value == '-1') {
+                    this.skipChairs(1, true);
+                    return
+                }
+
+                if (value == '0') {
+                    this.skipChairs(1, false);
+                    return
+                }
+
+                const valueAsJson = JSON.parse(value);
+
+                const studnet = new Student();
+                studnet.class = valueAsJson.class;
+                studnet.name = valueAsJson.name;
+                studnet.group = valueAsJson.group;
+
+                this.addStudentToSor(studnet);
 
             })
             this.moveToNextSor()
             i++;
         })
-        i++;
+        numberOfOszlop++;
     }
 
     /**
@@ -163,6 +184,14 @@ class Terem implements TeremInterface {
 
     getAllStudents(): StudentInterface[][] {
         return this._oszlop.sorok
+    }
+
+    get largestOszlop(): number {
+        return this._oszlop.maxOszlopKulcs;
+    }
+
+    get largestSor(): number {
+        return Math.max.apply(this._oszlop.allSorKulcs)
     }
 
     get currentSor(): SorInterface {

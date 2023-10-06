@@ -18,8 +18,12 @@ class StudentInSor extends Student implements StudentInterface {
         super();
         // This will let throught any boolean, can cause bugs, i don't care
         if (typeof student === 'boolean') {
-            this._disabled = true;
-            return
+            if (student === false) {
+                this._disabled = true;
+                return
+            } else {
+                return
+            }
         }
 
         this.addStudentData(student);

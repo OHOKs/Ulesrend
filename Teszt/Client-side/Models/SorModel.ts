@@ -7,7 +7,7 @@ interface SorInterface {
     maxSorKulcs: number;
 
     addStudentToSor(student: StudentData): void;
-    skipChairs(numberOfChairs: number): void;
+    skipChairs(numberOfChairs: number, isDisabled?: boolean): void;
 }
 
 class Sor implements SorInterface {
@@ -35,9 +35,15 @@ class Sor implements SorInterface {
     }
 
     // TODO this WILL cause bugs, cus accessing objects skipped by this mehtod should return undefined or most likely an empty object in the array
-    skipChairs(numberOfChairs: number): void {
+    skipChairs(numberOfChairs: number, isDisabled?: boolean): void {
         for (let i = 0; i <= numberOfChairs; i++) {
-            const studentInSor = new StudentInSor(false);
+            let studentInSor;
+            if (isDisabled) {
+                studentInSor = new StudentInSor(false);
+            } else {
+                studentInSor = new StudentInSor(true);
+            }
+
             studentInSor.oszlopDeskPosition = this.oszlopKulcs;
             studentInSor.sorDeskPosition = this.sorKulcs;
 
