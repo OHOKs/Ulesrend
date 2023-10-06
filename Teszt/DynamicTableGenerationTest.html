@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Két táblázat elrendezése</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ccc;
+        }
+        .draggable {
+            width: 100%;
+            height: 100%;
+            background-color: #3498db;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="createTable()">asd</button>
+</body>
+<script>
+    let classroom =[
+    ["Keskeny kevin","Dancsik dávid",null,"Nobody","Gábor"],
+    ["Korom Levente","Bogyó",null,"Nobody","Gergő"],
+    ["Bene Dominik","Nobody",null,"Nobody","Nobody"],
+    ["Gere Csanád","Jani Patrik",null,"Gyula","Nobody"],
+    ["Tanár",null,null,"Barna Máté","Barta Máte"]]
+
+    let classroomColloum = 6
+    let classroomRows = 6
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drag(event) {
+        event.dataTransfer.setData("text/plain", event.target.id);
+    }
+
+    function drop(event) {
+        event.preventDefault();
+
+        var data = event.dataTransfer.getData("text/plain");
+
+        console.log("Dragged Element ID:", data);
+
+        var draggedDiv = document.getElementById(data);
+
+        var target = event.target;
+        var containsText = false;
+
+        for (var i = 0; i < target.childNodes.length; i++) {
+            if (target.childNodes[i].nodeName === '#text') {
+                containsText = true;
+                break;
+            }
+        }
+
+        if(containsText == false){
+            event.target.appendChild(draggedDiv);
+        }
+    }
+
+    function createTable() {
+        if(document.getElementById("classroom")){
+            document.getElementById("classroom").remove()
+        }
+        else{
+
+        }
+        var table = document.createElement("table");
+        table.setAttribute('id', 'classroom')
+
+        var tbody = document.createElement("tbody");
+
+        for (var i = 0; i < classroomRows-1; i++) {
+            var row = document.createElement("tr");
+
+            for (var j = 0; j < classroomColloum-1; j++) {
+                var cell = document.createElement("td");
+                cell.setAttribute('id', (i + 1) +"-"+ (j + 1))
+                if(classroom[i][j] != null){
+                    if(classroom[i][j] != "Nobody" && classroom[i][j] != "Tanár"){
+                        var div = document.createElement("div")
+                        div.setAttribute('id', (i + 1) +"x"+ (j + 1))
+                        div.setAttribute('draggable', 'true')
+                        div.setAttribute('class', 'draggable')
+                        div.appendChild(document.createTextNode(classroom[i][j]))
+                        cell.appendChild(div);
+                    }
+                    if(classroom[i][j] != "Tanár"){
+                        cell.addEventListener('dragover', allowDrop);
+                        cell.addEventListener('drop', drop);
+                        cell.setAttribute('style', 'background-color: black; width: 50px; height: 50px;')
+                    }
+                    if(classroom[i][j]== "Tanár"){
+                        var div = document.createElement("div")
+                        div.setAttribute('id', (i + 1) +"x"+ (j + 1))
+                        div.appendChild(document.createTextNode(classroom[i][j]))
+                        cell.appendChild(div);
+                    }
+                }
+                row.appendChild(cell);
+            }
+
+            tbody.appendChild(row);
+        }
+
+        table.appendChild(tbody);
+
+        document.body.appendChild(table);
+
+        var draggableDivs = document.querySelectorAll('.draggable');
+
+        draggableDivs.forEach(function(div) {
+            div.addEventListener('dragstart', drag);
+        });
+    }
+</script>
+</html>
