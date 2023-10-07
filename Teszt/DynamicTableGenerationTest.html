@@ -111,16 +111,20 @@
             
             event.target.appendChild(draggedDiv);
 
-            let studentsTableId = draggedDiv.id+"-x"
-            console.log(studentsTableId)
-            if(document.getElementById(studentsTableId)){
-                document.getElementById(studentsTableId).remove()
+            if(document.getElementById(draggedDiv.id+"-x")){
+                document.getElementById(draggedDiv.id+"-x").remove()
             }
             if(document.getElementById("Students-"+draggedDiv.id)){
                 document.getElementById("Students-"+draggedDiv.id).remove()
             }
         }
         if (event.target.id == "dragHere"){
+            if(document.getElementById(draggedDiv.id+"-x")){
+                document.getElementById(draggedDiv.id+"-x").remove()
+            }
+            if(document.getElementById("Students-"+draggedDiv.id)){
+                document.getElementById("Students-"+draggedDiv.id).remove()
+            }
             var row = document.createElement("tr");
             var cell = document.createElement("td");
             cell.setAttribute('class', 'availablePlace')
