@@ -7,31 +7,48 @@
     <link rel="stylesheet" href="style.css">
     <style>
         .classroomTable{
+            border-collapse: collapse;
             width: 40%; 
             float: right; 
             margin-left: 20px; 
         }
         .studentsTable{
+            border-collapse: collapse;
             width: 20%;
             float: left; 
-            margin-right: 20px; 
+            margin-right: 10%; 
+            margin-top: 10%;
+        }
+        .dragHereTable{
+            border-collapse: collapse;
+            width: 10%; 
+            margin-left: 40%; 
+            margin-top: 10%;
+        }
+        .dragHereCell{
+            border: 1px solid black;
+            background-color: green; 
+            width: 50px; height: 50px;
         }
         .draggable {
-            width: 90%;
+            width: 100%;
             height: 100%;
             background-color: #3498db;
             cursor: pointer;
         }
-        .aviablePlace{
+        .availablePlace{
+            border: 1px solid black;
             background-color: grey; 
             width: 50px; height: 50px;
         }
         .teacherPlace{
+            border: 1px solid black;
             background-color: darkslategray;
             color:aliceblue;
             width: 50px; height: 50px;
         }
         .nullPlace{
+            border: 1px solid black;
             background-color: black;
             color:aliceblue;
             width: 50px; height: 50px;
@@ -91,10 +108,26 @@
         }
 
         if(containsText == false && event.target.id != "Students" && document.getElementById(event.target.id).childNodes.length == 0){
+            
             event.target.appendChild(draggedDiv);
+
+            let studentsTableId = draggedDiv.id+"-x"
+            console.log(studentsTableId)
+            if(document.getElementById(studentsTableId)){
+                document.getElementById(studentsTableId).remove()
+            }
+            if(document.getElementById("Students-"+draggedDiv.id)){
+                document.getElementById("Students-"+draggedDiv.id).remove()
+            }
         }
-        if (containsText == false && event.target.id == "Students"){
-            event.target.appendChild(draggedDiv);
+        if (event.target.id == "dragHere"){
+            var row = document.createElement("tr");
+            var cell = document.createElement("td");
+            cell.setAttribute('class', 'availablePlace')
+            cell.setAttribute('id', draggedDiv.id+"-x")
+            cell.appendChild(draggedDiv)
+            row.appendChild(cell);
+            document.getElementById("Students").appendChild(row);
         }
     }
 
@@ -128,7 +161,7 @@
                     } if(classroom[i][j] != "Tanár"){
                         cell.addEventListener('dragover', allowDrop);
                         cell.addEventListener('drop', drop);
-                        cell.setAttribute('class', 'aviablePlace')
+                        cell.setAttribute('class', 'availablePlace')
                     } else { 
                         cell.setAttribute('class', 'teacherPlace')
                         cell.appendChild(document.createTextNode(classroom[i][j]))
@@ -163,30 +196,44 @@
             table.setAttribute('class', 'studentsTable')
 
             var tbody = document.createElement("tbody");
-
-            var row = document.createElement("tr");
-
-            var cell = document.createElement("td");
-            cell.setAttribute('id', "Students")
-            cell.addEventListener('dragover', allowDrop);
-            cell.addEventListener('drop', drop);
-            cell.setAttribute('style', 'background-color: black; width: 50px; height: 50px;')
+            tbody.setAttribute('id', 'Students');
 
             for (var i = 0; i < studentList.length; i++) {
                 if(!checkDuplactedStudents(classroom, studentList[i])){
+                    var row = document.createElement("tr");
+                    var cell = document.createElement("td");
+                    cell.setAttribute('id', "Students-"+i)
+                    cell.addEventListener('dragover', allowDrop);
+                    cell.addEventListener('drop', drop);
+                    cell.setAttribute('class', 'availablePlace')
                     var div = document.createElement("div")
                     div.setAttribute('id', i)
                     div.setAttribute('draggable', 'true')
                     div.setAttribute('class', 'draggable')
                     div.appendChild(document.createTextNode(studentList[i]))
                     cell.appendChild(div);
+                    row.appendChild(cell);
+                    tbody.appendChild(row);
                 }
             }
 
+            table.appendChild(tbody);
+
+            document.body.appendChild(table);
+
+            var table = document.createElement("table");
+            table.setAttribute('class', 'dragHereTable')
+            var tbody = document.createElement("tbody");
+            var row = document.createElement("tr");
+            var cell = document.createElement("td");
+            cell.setAttribute('class', 'dragHereCell')
+            cell.setAttribute('id', 'dragHere')
+            cell.appendChild(document.createTextNode("Drag here"))
+            cell.addEventListener('dragover', allowDrop);
+            cell.addEventListener('drop', drop);
             row.appendChild(cell);
             tbody.appendChild(row);
             table.appendChild(tbody);
-
             document.body.appendChild(table);
 
             var draggableDivs = document.querySelectorAll('.draggable');
@@ -211,7 +258,11 @@
                 let element = document.getElementById(id);
 
                 if(element.childNodes.length != 0){
-                    classroomSave[i][j] = element.textContent
+                    if(element.textContent != "Folyoso"){
+                        classroomSave[i][j] = element.textContent
+                    } else{
+                        classroomSave[i][j] = null
+                    }
                 } 
                 if(element.childNodes.length == 0 && element.className != "null"){
                     classroomSave[i][j] = "Nobody"
@@ -225,7 +276,7 @@
         for(var i = 0; i < classroomSave.length; i++){
             if(i != 0){downloadableFile+="\n"}
             for(var j = 0; j < classroomSave[i].length; j++){
-                downloadableFile+= classroom[i][j]+";"
+                downloadableFile+= classroomSave[i][j]+";"
             }
         }
         const link = document.createElement("a");
