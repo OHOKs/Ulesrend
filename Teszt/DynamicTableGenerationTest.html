@@ -56,9 +56,9 @@
     </style>
 </head>
 <body>
-    <button onclick="createClassroomTable()">CreateClassroom</button>
-    <button onclick="createStudentsTable()">createStudents</button>
-    <button onclick="save()">Save</button>
+    <button onclick="createClassroomTable()">tanterem generálása</button>
+    <button onclick="createStudentsTable()">Diák lista generálása</button>
+    <button onclick="save()">Fájl mentése</button>
     <td class="null"></td>
 </body>
 <script>
@@ -106,18 +106,6 @@
                 break;
             }
         }
-
-        if(containsText == false && event.target.id != "Students" && document.getElementById(event.target.id).childNodes.length == 0){
-            
-            event.target.appendChild(draggedDiv);
-
-            if(document.getElementById(draggedDiv.id+"-x")){
-                document.getElementById(draggedDiv.id+"-x").remove()
-            }
-            if(document.getElementById("Students-"+draggedDiv.id)){
-                document.getElementById("Students-"+draggedDiv.id).remove()
-            }
-        }
         if (event.target.id == "dragHere"){
             if(document.getElementById(draggedDiv.id+"-x")){
                 document.getElementById(draggedDiv.id+"-x").remove()
@@ -132,6 +120,17 @@
             cell.appendChild(draggedDiv)
             row.appendChild(cell);
             document.getElementById("Students").appendChild(row);
+        } else{
+            if(containsText == false && event.target.id != "Students" && document.getElementById(event.target.id).childNodes.length == 0){
+                event.target.appendChild(draggedDiv);
+
+                if(document.getElementById(draggedDiv.id+"-x")){
+                    document.getElementById(draggedDiv.id+"-x").remove()
+                }
+                if(document.getElementById("Students-"+draggedDiv.id)){
+                    document.getElementById("Students-"+draggedDiv.id).remove()
+                }
+            } else{alert("Itt már van valaki!")}
         }
     }
 
@@ -193,7 +192,7 @@
 
     function createStudentsTable(){
         if(document.getElementById("studentList")){ document.getElementById("studentList").remove() }
-        if(!document.getElementById("classroom")){ alert("Eloszor kotelezo a tanterem beimportalasa") }
+        if(!document.getElementById("classroom")){ alert("A megfelelő működés érdekében a tanterem generálásának kell először megtörténnie") }
         else{
             var table = document.createElement("table");
             table.setAttribute('id', 'studentList')
@@ -232,7 +231,7 @@
             var cell = document.createElement("td");
             cell.setAttribute('class', 'dragHereCell')
             cell.setAttribute('id', 'dragHere')
-            cell.appendChild(document.createTextNode("Drag here"))
+            cell.appendChild(document.createTextNode("Húzd ide"))
             cell.addEventListener('dragover', allowDrop);
             cell.addEventListener('drop', drop);
             row.appendChild(cell);
@@ -249,30 +248,28 @@
     }
 
     function save(){
-        let classroomSave = createDynamicArray(classroomRows, classroomColloums)
-        /*let classroomSave = [[null,null,null,null,null],
-                            [null,null,null,null,null],
-                            [null,null,null,null,null],
-                            [null,null,null,null,null],
-                            [null,null,null,null,null]]*/
-        for (var i = 0; i < classroomRows-1; i++) {
-            for (var j = 0; j < classroomColloums-1; j++) {
+        if(!document.getElementById("classroom")){ alert("A megfelelő működés érdekében a tanterem generálásának kell először megtörténnie") }
+        else {
+            let classroomSave = createDynamicArray(classroomRows, classroomColloums)
 
-                let id = (i+1)+"-"+(j+1);
-                let element = document.getElementById(id);
+            for (var i = 0; i < classroomRows-1; i++) {
+                for (var j = 0; j < classroomColloums-1; j++) {
 
-                if(element.childNodes.length != 0){
-                    if(element.textContent != "Folyoso"){
-                        classroomSave[i][j] = element.textContent
-                    } else{
-                        classroomSave[i][j] = null
+                    let id = (i+1)+"-"+(j+1);
+                    let element = document.getElementById(id);
+
+                    if(element.childNodes.length != 0){
+                        if(element.textContent != "Folyoso"){
+                            classroomSave[i][j] = element.textContent
+                        } else{
+                            classroomSave[i][j] = null
+                        }
+                    } 
+                    if(element.childNodes.length == 0 && element.className != "null"){
+                        classroomSave[i][j] = "Nobody"
+                        console.log(element.value)
                     }
-                } 
-                if(element.childNodes.length == 0 && element.className != "null"){
-                    classroomSave[i][j] = "Nobody"
-                    console.log(element.value)
                 }
-            }
         }
 
         let downloadableFile = ""
@@ -294,6 +291,7 @@
         link.click();
 
         URL.revokeObjectURL(link.href);
+        }
     }
 
     function createDynamicArray(Rows, Colloums){
