@@ -8,60 +8,195 @@
     <style>
         .classroomTable{
             border-collapse: collapse;
-            width: 40%; 
+            width: 30%; 
             float: right; 
-            margin-left: 20px; 
+            margin-right: 3%; 
+            margin-top: 3%;
         }
         .studentsTable{
+            background-color: black;
             border-collapse: collapse;
             width: 20%;
             float: left; 
-            margin-right: 10%; 
-            margin-top: 10%;
+            margin-left: 4%; 
         }
         .dragHereTable{
             border-collapse: collapse;
-            width: 10%; 
-            margin-left: 40%; 
-            margin-top: 10%;
+            width: 5%; 
+            margin-left:47.6%; 
+            margin-top: 5%
         }
         .dragHereCell{
-            border: 1px solid black;
-            background-color: green; 
-            width: 50px; height: 50px;
+            text-align: center;
+            border-radius: 20px;
+            color: white;
+            background-color: #191970; 
+            width: 100px; height: 100px;
         }
         .draggable {
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            line-height: 1.5;
+            outline: none;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: normal;
+            border-radius: 15px;
             width: 100%;
             height: 100%;
-            background-color: #3498db;
+            background-color: #1F51FF;
+            color: white;
             cursor: pointer;
         }
         .availablePlace{
             border: 1px solid black;
-            background-color: grey; 
+            background-color: white; 
             width: 50px; height: 50px;
         }
         .teacherPlace{
+            text-align: center;
             border: 1px solid black;
-            background-color: darkslategray;
+            background-color: rgb(22, 147, 225);
             color:aliceblue;
             width: 50px; height: 50px;
         }
         .nullPlace{
             border: 1px solid black;
             background-color: black;
-            color:aliceblue;
+            color:white;
+            text-align: center;
             width: 50px; height: 50px;
+        }
+        .diakLista{
+            float: left;
+            margin-top: 0%;
+            margin-left: 12%;
+        }
+        .tanterem{
+            float: right;
+            margin-top: 0%;
+            margin-right:16%;
+        }
+        .Buttons{
+            margin-top: 1%;
+            margin: auto;
+            align-self: center;
+            width: 30%;
+        }
+        #uploadStudentsList{
+            width: 30%;
+            margin-left: 1%;
+        }
+        #uploadClassroom{
+            width: 30%;
+            float: right;
+            margin-right: 1%;
+            margin-top: -6%;
+        }
+        #downloadClassroom{
+            width: 200px;
+            margin-left: 40%;
+            margin-top: -6%;
+        }
+        body {
+            background: linear-gradient(0.25turn, #3f87a6, #ebf8e1, #f69d3c);
+        }
+    
+        div {
+            text-align:center;
+            font-size:.85em;
+        }
+
+        label {
+            font-size: large;
+            font-style: unset;
+            cursor: pointer;
+            font-family: 'Franklin Gothic Medium'
+
+        }
+
+        label:hover{
+            transform: translateY(-6px);
+            font-size: x-large;
+            animation: none;
+            transition: 0.3s;
+
+        }
+
+        span {
+            font-size: medium;
+        }
+
+        button {
+            background-color: #27ae60;
+            border-radius: 8px;
+            border-style: none;
+            box-shadow: rgba(39, 174, 96, .15) 0 4px 9px;
+            box-sizing: border-box;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: normal;
+            line-height: 1.5;
+            outline: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            transform: translate3d(0, 0, 0);
+            transition: all .3s;
+        }
+
+        button:hover {
+        background-color: #1e8449;
+        opacity: 1;
+        transform: translateY(0);
+        transition-duration: .35s;
+        }
+
+        button:active {
+        transform: translateY(2px);
+        transition-duration: .35s;
+        }
+
+        button:hover {
+        box-shadow: rgba(39, 174, 96, .2) 0 6px 12px;
         }
     </style>
 </head>
 <body>
+    <h1><center>Ülésrend</center></h1>
+    <h1 class="tanterem"><center>Tanterem</center></h1>
+    <h1 class="diakLista"><center>Diáklista</center></h1>
+    <div class="Buttons">
+        <div id="uploadStudentsList">
+            <input type="file" id="uploadStudentsList-btn" onchange="uploadStudentsList(files[0].name)" hidden />
+            <label for="uploadStudentsList-btn">Diák lista feltöltés</label><br>
+            <span id="file-chosen-SL">-Nincs kiválaszva fájl-</span>
+            <button onclick="submitStudentsList()">Leadás</button>
+        </div>
+    
+        <div id="uploadClassroom">
+            <input type="file" id="uploadClassroom-btn" onchange="uploadClassroom(files[0].name)" hidden />
+            <label for="uploadClassroom-btn">Tanterem feltöltés</label><br>
+            <button onclick="submitClassroom()">Leadás</button>
+            <span id="file-chosen-EC">-Nincs kiválaszva fájl-</span>
+        </div>
+        <br>
+        <div id="downloadClassroom">
+            <button onclick="save()">Tanterem fájl letöltés</button><br>
+        </div>
+    </div>
+
+</body>
+<script>
+    /*    
     <button onclick="createClassroomTable()">tanterem generálása</button>
     <button onclick="createStudentsTable()">Diák lista generálása</button>
     <button onclick="save()">Fájl mentése</button>
-    <td class="null"></td>
-</body>
-<script>
+    <td class="null"></td>*/
     //tanterem alap {JELENLEG IDEIGLENES} -- TODO
     let classroom = [ 
         ["Keskeny kevin","Dancsik dávid",null,"Nobody","Gábor"],
@@ -83,12 +218,32 @@
     let classroomColloums = 6 //oszlopok szama {JELENLEG IDEIGLENES} --  TODO
     let classroomRows = 6 //sorok szama {JELENLEG IDEIGLENES} -- TODO
 
+    let uploadStudentsList = (fileName) => {
+            document.getElementById('file-chosen-SL').textContent = "-" + fileName + "-"
+    }
+    let uploadClassroom = (fileName) => {
+        document.getElementById('file-chosen-EC').textContent = "-" + fileName + "-"
+    }
+
     function allowDrop(event) {
         event.preventDefault();
     }
 
     function drag(event) {
         event.dataTransfer.setData("text/plain", event.target.id);
+    }
+
+    let submitStudentsList = () => {
+        let file = document.getElementById('uploadStudentsList-btn').files[0];
+        //Itt feldolgozni a bekuldott file-t es aztan meghivni a createStudentsTable fuggvenyt. Az adat atadast ugy csinalod ahogy szeretned.
+        createStudentsTable()
+    }
+
+    let submitClassroom = () => {
+        let file = document.getElementById('uploadClassroom-btn').files[0];
+        //Itt feldolgozni a file-t es aztan meghivni a createClassroomTable fuggvenyt ami megcsinalja a tablat. ofc adatokat at kell adni neki, azt ahogy szeretned ugy csinald meg. jelenleg nem var semmit sem, atirhatod hogy varjon valamit vagy csak szimplan majd benne irsz at. m1
+        //!!!FONTOS!!! Az oszlopok es sorok szamat ird be dinamikusan olvasasnal, hogy melyik mennyi. 102-103 sorba vannak jelenleg azok az adatok
+        createClassroomTable()
     }
 
     function drop(event) {
@@ -191,7 +346,7 @@
     }
 
     function createStudentsTable(){
-        if(document.getElementById("studentList")){ document.getElementById("studentList").remove() }
+        if(document.getElementById("studentList")){ document.getElementById("dragHereTable").remove(); document.getElementById("dragHere").remove() }
         if(!document.getElementById("classroom")){ alert("A megfelelő működés érdekében a tanterem generálásának kell először megtörténnie") }
         else{
             var table = document.createElement("table");
@@ -231,7 +386,7 @@
             var cell = document.createElement("td");
             cell.setAttribute('class', 'dragHereCell')
             cell.setAttribute('id', 'dragHere')
-            cell.appendChild(document.createTextNode("Húzd ide"))
+            cell.appendChild(document.createTextNode("Visszahelyezés"))
             cell.addEventListener('dragover', allowDrop);
             cell.addEventListener('drop', drop);
             row.appendChild(cell);
