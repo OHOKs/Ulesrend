@@ -33,7 +33,7 @@ class Terem {
     /**
      * El skippeli a szekeket
      * @param numberOfChairs Hany szeket szeretnenk kihagyni
-     * @param isDisabled Lehet-e a helyre ulni, vagy csak ures True = nem lehet oda ulni
+     * @param isDisabled Lehet-e a helyre ulni, vagy csak ures | True = nem lehet oda ulni
      */
     skipChairs(numberOfChairs, isDisabled) {
         this._currentSor.skipChairs(numberOfChairs, isDisabled);
@@ -133,9 +133,15 @@ class Terem {
     getAllStudents() {
         return this._oszlop.sorok;
     }
+    /**
+     * Visszadaja a leghosszabb oszlopot
+     */
     get largestOszlop() {
         return this._oszlop.maxOszlopKulcs;
     }
+    /**
+     * Visszadaja a leghosszabb sort
+     */
     get largestSor() {
         return Math.max.apply(this._oszlop.allSorKulcs);
     }
