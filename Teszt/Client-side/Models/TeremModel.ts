@@ -67,7 +67,7 @@ class Terem implements TeremInterface {
     /**
      * El skippeli a szekeket
      * @param numberOfChairs Hany szeket szeretnenk kihagyni
-     * @param isDisabled Lehet-e a helyre ulni, vagy csak ures True = nem lehet oda ulni
+     * @param isDisabled Lehet-e a helyre ulni, vagy csak ures | True = nem lehet oda ulni
      */
     skipChairs(numberOfChairs: number, isDisabled?: boolean): void {
         this._currentSor.skipChairs(numberOfChairs, isDisabled);
@@ -186,10 +186,16 @@ class Terem implements TeremInterface {
         return this._oszlop.sorok
     }
 
+    /**
+     * Visszadaja a leghosszabb oszlopot
+     */
     get largestOszlop(): number {
         return this._oszlop.maxOszlopKulcs;
     }
 
+    /**
+     * Visszadaja a leghosszabb sort
+     */
     get largestSor(): number {
         return Math.max.apply(this._oszlop.allSorKulcs)
     }
