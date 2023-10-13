@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ülésrend</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <h1><center>Ülésrend</center></h1>
+    <h1 class="tanterem"><center>Tanterem</center></h1>
+    <h1 class="diakLista"><center>Diáklista</center></h1>
+    <div class="Buttons">
+        <div id="uploadStudentsList">
+            <input type="file" id="uploadStudentsList-btn" onchange="uploadStudentsList(files[0].name)" hidden />
+            <label for="uploadStudentsList-btn">Diáklista feltöltés</label><br>
+
+            <input type="file" id="uploadClassroom-btn" onchange="uploadClassroom(files[0].name)" hidden />
+            <label for="uploadClassroom-btn">Tanterem feltöltés</label><br>
+        </div>
+        <div class="files-chosen">
+            <span id="file-chosen-SL">Nincs kiválaszva fájl</span>
+            <span id="file-chosen-EC">Nincs kiválaszva fájl</span>
+        </div>
+        <div>
+            <button id="submitStudentsList" onclick="submitStudentsList()">Leadás</button>
+        </div>
+        <div>
+            <button id="submitClassroom" onclick="submitClassroom()">Leadás</button>
+        </div>
+        <br>
+        <div>
+            <button onclick="save()" id="downloadClassroom">Tanterem fájl letöltés</button><br>
+        </div>
+    </div>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+</body>
+<script>
+    /*    
+    <button onclick="createClassroomTable()">tanterem generálása</button>
+    <button onclick="createStudentsTable()">Diák lista generálása</button>
+    <button onclick="save()">Fájl mentése</button>
+    <td class="null"></td>*/
+    //tanterem alap {JELENLEG IDEIGLENES} -- TODO
+    let classroom = [ 
+        ["Keskeny kevin","Dancsik dávid",null,"Nobody","Gábor"],
+        ["Korom Levente","Bogyó",null,"Nobody","Gergő"],
+        ["Bene Dominik","Nobody",null,"Nobody","Nobody"],
+        ["Gere Csanad","Jani Patrik",null,"Gyula","Nobody"],
+        ["Tanár",null,null,"Barna Máté","Barta Máte"]
+    ]
+
+    //diaklista {JELENLEG IDEIGLENES} -- TODO
+    let studentList = [ 
+        "Jani Patrik",
+        "Gere Csanad",
+        "Gyula",
+        "Mate1",
+        "Mate2"
+    ]
+
+    let classroomColloums = 6 //oszlopok szama {JELENLEG IDEIGLENES} --  TODO
+    let classroomRows = 6 //sorok szama {JELENLEG IDEIGLENES} -- TODO
+
+    let uploadStudentsList = (fileName) => {
+            document.getElementById('file-chosen-SL').textContent = "-" + fileName + "-"
+    }
+    let uploadClassroom = (fileName) => {
+        document.getElementById('file-chosen-EC').textContent = "-" + fileName + "-"
+    }
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drag(event) {
+        event.dataTransfer.setData("text/plain", event.target.id);
+    }
+
+    let submitStudentsList = () => {
+        let file = document.getElementById('uploadStudentsList-btn').files[0];
+        //Itt feldolgozni a bekuldott file-t es aztan meghivni a createStudentsTable fuggvenyt. Az adat atadast ugy csinalod ahogy szeretned.
+        createStudentsTable()
+    }
+
+    let submitClassroom = () => {
+        let file = document.getElementById('uploadClassroom-btn').files[0];
+        //Itt feldolgozni a file-t es aztan meghivni a createClassroomTable fuggvenyt ami megcsinalja a tablat. ofc adatokat at kell adni neki, azt ahogy szeretned ugy csinald meg. jelenleg nem var semmit sem, atirhatod hogy varjon valamit vagy csak szimplan majd benne irsz at. m1
+        //!!!FONTOS!!! Az oszlopok es sorok szamat ird be dinamikusan olvasasnal, hogy melyik mennyi. 102-103 sorba vannak jelenleg azok az adatok
+        createClassroomTable()
+    }
+
+    function drop(event) {
+        event.preventDefault();
+
+        var data = event.dataTransfer.getData("text/plain");
+
+        var draggedDiv = document.getElementById(data);
+
+        var containsText = false;
+
+        for (var i = 0; i < event.target.childNodes.length; i++) {
+            if (event.target.childNodes[i].nodeName === '#text') {
+                containsText = true;
+                break;
+            }
+        }
+        if (event.target.id == "dragHere"){
+            if(document.getElementById(draggedDiv.id+"-x")){
+                document.getElementById(draggedDiv.id+"-x").remove()
+            }
+            if(document.getElementById("Students-"+draggedDiv.id)){
+                document.getElementById("Students-"+draggedDiv.id).remove()
+            }
+            var row = document.createElement("tr");
+            var cell = document.createElement("td");
+            cell.setAttribute('class', 'availablePlace')
+            cell.setAttribute('id', draggedDiv.id+"-x")
+            cell.appendChild(draggedDiv)
+            row.appendChild(cell);
+            document.getElementById("Students").appendChild(row);
+        } else{
+            if(containsText == false && event.target.id != "Students" && document.getElementById(event.target.id).childNodes.length == 0){
+                event.target.appendChild(draggedDiv);
+
+                if(document.getElementById(draggedDiv.id+"-x")){
+                    document.getElementById(draggedDiv.id+"-x").remove()
+                }
+                if(document.getElementById("Students-"+draggedDiv.id)){
+                    document.getElementById("Students-"+draggedDiv.id).remove()
+                }
+            } else{alert("Itt már van valaki!")}
+        }
+    }
+
+    function createClassroomTable() {
+        if(document.getElementById("classroom")){ document.getElementById("classroom").remove() }
+
+        var table = document.createElement("table");
+        table.setAttribute('id', 'classroom')
+        table.setAttribute('class', 'classroomTable')
+
+        var tbody = document.createElement("tbody");
+
+        for (var i = 0; i < classroomRows-1; i++) {
+
+            var row = document.createElement("tr");
+
+            for (var j = 0; j < classroomColloums-1; j++) {
+
+                var cell = document.createElement("td");
+                cell.setAttribute('id', (i + 1) +"-"+ (j + 1))
+
+                if(classroom[i][j] != null){
+
+                    if(classroom[i][j] != "Nobody" && classroom[i][j] != "Tanár"){
+                        var div = document.createElement("div")
+                        div.setAttribute('id', (i + 1) +"x"+ (j + 1))
+                        div.setAttribute('draggable', 'true')
+                        div.setAttribute('class', 'draggable')
+                        div.appendChild(document.createTextNode(classroom[i][j]))
+                        cell.appendChild(div);
+                    } if(classroom[i][j] != "Tanár"){
+                        cell.addEventListener('dragover', allowDrop);
+                        cell.addEventListener('drop', drop);
+                        cell.setAttribute('class', 'availablePlace')
+                    } else { 
+                        cell.setAttribute('class', 'teacherPlace')
+                        cell.appendChild(document.createTextNode(classroom[i][j]))
+                    }
+                } else {
+                    cell.setAttribute('class', "nullPlace")
+                    cell.appendChild(document.createTextNode("Folyoso"))
+                }
+                row.appendChild(cell);
+            }
+
+            tbody.appendChild(row);
+        }
+
+        table.appendChild(tbody);
+
+        document.body.appendChild(table);
+
+        var draggableDivs = document.querySelectorAll('.draggable');
+
+        draggableDivs.forEach(function(div) {
+            div.addEventListener('dragstart', drag);
+        });
+    }
+
+    function createStudentsTable(){
+        if(document.getElementById("studentList")){ document.getElementById("dragHereTable").remove(); document.getElementById("dragHere").remove() }
+        if(!document.getElementById("classroom")){ alert("A megfelelő működés érdekében a tanterem generálásának kell először megtörténnie") }
+        else{
+            var table = document.createElement("table");
+            table.setAttribute('id', 'studentList')
+            table.setAttribute('class', 'studentsTable')
+
+            var tbody = document.createElement("tbody");
+            tbody.setAttribute('id', 'Students');
+
+            for (var i = 0; i < studentList.length; i++) {
+                if(!checkDuplactedStudents(classroom, studentList[i])){
+                    var row = document.createElement("tr");
+                    var cell = document.createElement("td");
+                    cell.setAttribute('id', "Students-"+i)
+                    cell.addEventListener('dragover', allowDrop);
+                    cell.addEventListener('drop', drop);
+                    cell.setAttribute('class', 'availablePlace')
+                    var div = document.createElement("div")
+                    div.setAttribute('id', i)
+                    div.setAttribute('draggable', 'true')
+                    div.setAttribute('class', 'draggable')
+                    div.appendChild(document.createTextNode(studentList[i]))
+                    cell.appendChild(div);
+                    row.appendChild(cell);
+                    tbody.appendChild(row);
+                }
+            }
+
+            table.appendChild(tbody);
+
+            document.body.appendChild(table);
+
+            var table = document.createElement("table");
+            table.setAttribute('class', 'dragHereTable')
+            var tbody = document.createElement("tbody");
+            var row = document.createElement("tr");
+            var cell = document.createElement("td");
+            cell.setAttribute('class', 'dragHereCell')
+            cell.setAttribute('id', 'dragHere')
+            cell.appendChild(document.createTextNode("Visszahelyezés"))
+            cell.addEventListener('dragover', allowDrop);
+            cell.addEventListener('drop', drop);
+            row.appendChild(cell);
+            tbody.appendChild(row);
+            table.appendChild(tbody);
+            document.body.appendChild(table);
+
+            var draggableDivs = document.querySelectorAll('.draggable');
+
+            draggableDivs.forEach(function(div) {
+                div.addEventListener('dragstart', drag);
+            });
+        }
+    }
+
+    function save(){
+        if(!document.getElementById("classroom")){ alert("A megfelelő működés érdekében a tanterem generálásának kell először megtörténnie") }
+        else {
+            let classroomSave = createDynamicArray(classroomRows, classroomColloums)
+
+            for (var i = 0; i < classroomRows-1; i++) {
+                for (var j = 0; j < classroomColloums-1; j++) {
+
+                    let id = (i+1)+"-"+(j+1);
+                    let element = document.getElementById(id);
+
+                    if(element.childNodes.length != 0){
+                        if(element.textContent != "Folyoso"){
+                            classroomSave[i][j] = element.textContent
+                        } else{
+                            classroomSave[i][j] = null
+                        }
+                    } 
+                    if(element.childNodes.length == 0 && element.className != "null"){
+                        classroomSave[i][j] = "Nobody"
+                        console.log(element.value)
+                    }
+                }
+        }
+
+        let downloadableFile = ""
+        
+        for(var i = 0; i < classroomSave.length; i++){
+            if(i != 0){downloadableFile+="\n"}
+            for(var j = 0; j < classroomSave[i].length; j++){
+                downloadableFile+= classroomSave[i][j]+";"
+            }
+        }
+        const link = document.createElement("a");
+
+        const file = new Blob([downloadableFile], { type: 'text/plain' });
+
+        link.href = URL.createObjectURL(file);
+
+        link.download = "Classroom.json"
+
+        link.click();
+
+        URL.revokeObjectURL(link.href);
+        }
+    }
+
+    function createDynamicArray(Rows, Colloums){
+        let classroomSave = new Array(classroomRows-1)
+        for (var i = 0; i < classroomRows-1; i++) {
+            classroomSave[i] = new Array(classroomColloums-1)
+            for (var j = 0; j < classroomColloums-1; j++) {
+                classroomSave[i][j] = null
+            }
+        }
+        
+        return classroomSave;
+    }
+
+    function checkDuplactedStudents(classroom, student){
+        let exist = false
+
+        for (var i = 0; i < classroomRows-1; i++) {
+            for (var j = 0; j < classroomColloums-1; j++) {
+                if(classroom[i][j] == student){exist = true}
+            }
+        }
+
+        return exist
+    }
+</script>
+</html>
