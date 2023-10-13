@@ -1,0 +1,5 @@
+Keskeny kevin;Dancsik dávid;null;Nobody;Gábor
+Korom Levente;Bogyó;null;Nobody;Gergő
+Bene Dominik;Nobody;null;Nobody;Nobody
+Gere Csanad;Jani Patrik;null;Gyula;Nobody
+Tanár;null;null;Barna Máté;Barta Máte

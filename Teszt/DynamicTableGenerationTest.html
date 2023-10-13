@@ -302,9 +302,6 @@
         }
     }
 
-    // Test code
-    const asd = new Student("asd", "asd", "asdasd")
-    console.log(asd.name);
     /*    
     <button onclick="createClassroomTable()">tanterem generálása</button>
     <button onclick="createStudentsTable()">Diák lista generálása</button>
@@ -312,19 +309,18 @@
     <td class="null"></td>*/
     //tanterem alap {JELENLEG IDEIGLENES} -- TODO
 
-    let classroom = [
-        ["Keskeny kevin", "Dancsik dávid", null, "Nobody", "Gábor"],
-        ["Korom Levente", "Bogyó", null, "Nobody", "Gergő"],
-        ["Bene Dominik", "Nobody", null, "Nobody", "Nobody"],
-        ["Gere Csanad", "Jani Patrik", null, "Gyula", "Nobody"],
-        ["Tanár", null, null, "Barna Máté", "Barta Máte"]
-    ]
+    // ["Keskeny kevin", "Dancsik dávid", null, "Nobody", "Gábor"],
+    // ["Korom Levente", "Bogyó", null, "Nobody", "Gergő"],
+    // ["Bene Dominik", "Nobody", null, "Nobody", "Nobody"],
+    // ["Gere Csanad", "Jani Patrik", null, "Gyula", "Nobody"],
+    // ["Tanár", null, null, "Barna Máté", "Barta Máte"]
+    let classroom = []
 
     //diaklista {JELENLEG IDEIGLENES} -- TODO
     let studentList = []
 
-    let classroomColloums = 6 //oszlopok szama {JELENLEG IDEIGLENES} --  TODO
-    let classroomRows = 6 //sorok szama {JELENLEG IDEIGLENES} -- TODO
+    let classroomColloums = 0 //oszlopok szama {JELENLEG IDEIGLENES} --  TODO
+    let classroomRows = 0 //sorok szama {JELENLEG IDEIGLENES} -- TODO
 
     let uploadStudentsList = (fileName) => {
         document.getElementById('file-chosen-SL').textContent = "-" + fileName + "-"
@@ -369,7 +365,30 @@
         //Itt feldolgozni a file-t es aztan meghivni a createClassroomTable fuggvenyt ami megcsinalja a tablat. ofc adatokat at kell adni neki, azt ahogy szeretned ugy csinald meg. jelenleg nem var semmit sem, atirhatod hogy varjon valamit vagy csak szimplan majd benne irsz at. m1
         //!!!FONTOS!!! Az oszlopok es sorok szamat ird be dinamikusan olvasasnal, hogy melyik mennyi. 102-103 sorba vannak jelenleg azok az adatok
         // nem majd szenvedek maskor vele
-        createClassroomTable()
+        // HACK mukodik, de te jo eg ez fos 
+        const fileReader = new FileReader()
+        fileReader.readAsText(file)
+        fileReader.onload = () => {
+            const fileJson = fileReader.result.split(/[\r\n]+/g).forEach((sor) => {
+                let values = new Array();
+                sor.split(";").forEach((value) => {
+                    console.log(value);
+                    switch (value) {
+                        case "null":
+                            values.push(null);
+                            return;
+                        default:
+                            // BUG no idea why the replace is necessary, works tho
+                            values.push(value.replace(/"/g, ''));
+                            break;
+                    }
+                });
+                classroomRows = (classroomRows < values.length) ? values.length + 1 : classroomRows;
+                classroom.push(values);
+            });
+            classroomColloums = classroom.length + 1;
+            createClassroomTable()
+        }
     }
 
     function drop(event) {
@@ -421,7 +440,6 @@
         var table = document.createElement("table");
         table.setAttribute('id', 'classroom')
         table.setAttribute('class', 'classroomTable')
-
         var tbody = document.createElement("tbody");
 
         for (var i = 0; i < classroomRows - 1; i++) {
@@ -558,7 +576,11 @@
             for (var i = 0; i < classroomSave.length; i++) {
                 if (i != 0) { downloadableFile += "\n" }
                 for (var j = 0; j < classroomSave[i].length; j++) {
-                    downloadableFile += classroomSave[i][j] + ";"
+                    if (j == classroomSave[i].length - 1) {
+                        downloadableFile += classroomSave[i][j]
+                    } else {
+                        downloadableFile += classroomSave[i][j] + ";"
+                    }
                 }
             }
             const link = document.createElement("a");
@@ -567,7 +589,7 @@
 
             link.href = URL.createObjectURL(file);
 
-            link.download = "Classroom.json"
+            link.download = "Classroom.txt"
 
             link.click();
 
